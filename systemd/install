@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+export DNS_UPDATER_PATH="$(realpath ../update-dns)"
+export DNS_UPDATER_ENVFILE="$(realpath ../prod.env)"
+
+echo "Expanded unit file:"
+cat dns-updater.service | envsubst | sudo tee /etc/systemd/system/dns-updater.service
+
+echo -e "\nExpanded timer file:"
+cat dns-updater.timer | envsubst | sudo tee /etc/systemd/system/dns-updater.timer

@@ -1,0 +1,6 @@
+[Unit]
+Description=Updates a remote DNS record dynamically
+
+[Service]
+ExecStart=${DNS_UPDATER_PATH}
+EnvironmentFile=${DNS_UPDATER_ENVFILE}
