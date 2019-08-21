@@ -2,9 +2,24 @@
 
 ## Usage
 
+### Command-line invocation
+
+Fill in your details in `prod.env` and invoke the following command:
+
 ```bash
-env $(tr "\\n" " " < prod.env) ./update-dns.sh
+env $(tr "\\n" " " < prod.env) ./update-dns
 ```
+
+### systemd
+
+To automatically update your DNS record:
+
+```bash
+cd systemd
+./install
+```
+
+This will install a systemd unit file and timer to automatically run the script every two minutes.
 
 ## Finding your DNS record ID
 
