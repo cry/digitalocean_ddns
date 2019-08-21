@@ -2,11 +2,13 @@
 
 set -eu -o pipefail
 
-export DNS_UPDATER_PATH="$(realpath ../update-dns)"
-export DNS_UPDATER_ENVFILE="$(realpath ../prod.env)"
+SCRIPT_PATH=$(dirname "$(readlink -f "$0")")
+
+export DNS_UPDATER_PATH="$(realpath ${SCRIPT_PATH}/../update-dns)"
+export DNS_UPDATER_ENVFILE="$(realpath ${SCRIPT_PATH}/../prod.env)"
 
 echo "Expanded unit file:"
-cat dns-updater.service | envsubst | sudo tee /etc/systemd/system/dns-updater.service
+cat "${SCRIPT_PATH}"/dns-updater.service | envsubst | sudo tee /etc/systemd/system/dns-updater.service
 
 echo -e "\nExpanded timer file:"
-cat dns-updater.timer | envsubst | sudo tee /etc/systemd/system/dns-updater.timer
+cat "${SCRIPT_PATH}"/dns-updater.timer | envsubst | sudo tee /etc/systemd/system/dns-updater.timer

@@ -15,8 +15,7 @@ env $(tr "\\n" " " < prod.env) ./update-dns
 To automatically update your DNS record:
 
 ```bash
-cd systemd
-./install
+./systemd/install
 ```
 
 This will install a systemd unit file and timer to automatically run the script every two minutes.
