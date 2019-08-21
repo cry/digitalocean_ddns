@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -u -o pipefail
+set -eu -o pipefail
 
 # TODO(carey): update this to acquire record id dynamically
 
