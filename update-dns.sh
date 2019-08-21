@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -u -o pipefail
+
+# TODO(carey): update this to acquire record id dynamically
+
+DIGITALOCEAN_API_ENDPOINT="https://api.digitalocean.com/v2/domains/${DDNS_DOMAIN}/records/${DIGITALOCEAN_DNS_RECORD_ID}"
+
+# Validate that we have a token
+if [[ -z "${DIGITALOCEAN_API_TOKEN}" ]]; then
+    logger -s "Digitalocean api token missing"
+    exit 1
+fi
+
+REMOTE_IP="$(dig +short ${DDNS_SUBDOMAIN})"
+
+if [[ -z "${REMOTE_IP}" ]]; then
+    logger -s "Could not obtain remote IP for ${DDNS_SUBDOMAIN}"
+    exit 2
+fi
+
+IP_SOURCE="${IP_SOURCE:-https://api.ipify.org/}"
+CURRENT_IP="$(curl --silent ${IP_SOURCE})"
+
+if [[ -z "${CURRENT_IP}" ]]; then
+    logger -s "Couldn't obtain current IP from ${IP_SOURCE}"
+    exit 3
+elif [[ "${REMOTE_IP}" == "${CURRENT_IP}" ]]; then
+    logger -s "Remote and current IP match, doing nothing."
+    exit 0
+fi
+
+logger -s "IP change detected, updating."
+
+curl \
+    --silent \
+    -X PUT \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${DIGITALOCEAN_API_TOKEN}" \
+    -d '{"data": "'"${CURRENT_IP}"'"}' \
+    "${DIGITALOCEAN_API_ENDPOINT}"
